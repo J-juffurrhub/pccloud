@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuração de Cloud PC</title>
+    <!-- Inclui o Tailwind CSS para estilização -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Inclui Three.js para o fundo 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000; /* Fundo preto puro para AMOLED */
+            color: #e2e8f0; /* Texto claro */
+            overflow: hidden; /* Evita barras de rolagem devido ao canvas de fundo */
+        }
+        /* Estilo personalizado para o foco dos inputs */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(100, 149, 237, 0.5); /* Azul mais vibrante para foco */
+            border-color: #6495ed; /* Cor da borda azul mais vibrante */
+        }
+        .step-content {
+            display: none;
+            opacity: 0; /* Começa invisível para animação */
+            transform: translateY(20px); /* Começa um pouco abaixo para o slide-in */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Transição para fade e slide */
+        }
+        .step-content.active {
+            display: block;
+            opacity: 1; /* Torna visível */
+            transform: translateY(0); /* Volta à posição original */
+        }
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #333333; /* Cor cinza escuro para não-ativos (AMOLED) */
+            border-radius: 50%;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .progress-dot.active {
+            background-color: #6495ed; /* Azul vibrante para ativo */
+            transform: scale(1.2); /* Aumenta um pouco o tamanho do ponto ativo */
+        }
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; /* Garante que o canvas fique atrás do conteúdo */
+            opacity: 0; /* Começa invisível para o efeito de fade-in */
+            transition: opacity 2s ease-in-out; /* Transição suave para o fade-in */
+        }
+        .form-container {
+            background-color: rgba(0, 0, 0, 0.85); /* Fundo semi-transparente preto puro para o formulário */
+            backdrop-filter: blur(5px); /* Efeito de desfoque para o fundo */
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #222222; /* Borda mais escura (AMOLED) */
+            position: relative; /* Para que o z-index funcione em relação ao canvas */
+            z-index: 1; /* Garante que o formulário fique na frente */
+        }
+        /* Animação para botões */
+        .animated-button {
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .animated-button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
+        }
+        /* Animação para a área de output */
+        #output {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        #output.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .loading-message {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 1.125rem; /* text-lg */
+            color: #6495ed; /* Azul vibrante */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .loading-message.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <canvas id="bg-canvas"></canvas> <!-- Canvas para o fundo 3D -->
+
+    <div class="form-container w-full max-w-2xl">
+        <h1 class="text-3xl font-bold text-blue-400 mb-6 text-center">Configuração do Cloud PC</h1>
+
+        <div class="flex justify-center mb-6">
+            <div id="progressIndicator" class="flex space-x-2">
+                <div class="progress-dot active" data-step="1"></div>
+                <div class="progress-dot" data-step="2"></div>
+                <div class="progress-dot" data-step="3"></div>
+                <div class="progress-dot" data-step="4"></div>
+                <div class="progress-dot" data-step="5"></div>
+            </div>
+        </div>
+
+        <form id="cloudPcForm" class="space-y-6">
+            <!-- Passo 1: Configuração de Hardware -->
+            <div id="step1" class="step-content active">
+                <h2 class="text-2xl font-semibold text-gray-100 mb-4">Passo 1: Configuração de Hardware</h2>
+                <!-- Seção de Memória RAM -->
+                <div>
+                    <label for="ram" class="block text-gray-200 text-sm font-semibold mb-2">Memória RAM:</label>
+                    <select id="ram" name="ram" class="block w-full p-3 border border-gray-700 rounded-lg shadow-sm bg-gray-900 text-white focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out">
+                        <option value="500MB">500 MB</option>
+                        <option value="1GB">1 GB</option>
+                        <option value="2GB">2 GB</option>
+                        <option value="4GB">4 GB</option>
+                        <option value="8GB">8 GB</option>
+                    </select>
+                </div>
+
+                <!-- Seção de Processador -->
+                <div class="flex items-center space-x-4">
+                    <!-- Imagem do processador que será atualizada dinamicamente -->
+                    <img id="processorImage" src="https://placehold.co/60x60/a0c4ff/ffffff?text=CPU" alt="Imagem de Processador" class="rounded-lg shadow-sm">
+                    <div>
+                        <label for="processor" class="block text-gray-200 text-sm font-semibold mb-2">Processador:</label>
+                        <select id="processor" name="processor" class="block w-full p-3 border border-gray-700 rounded-lg shadow-sm bg-gray-900 text-white focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out">
+                            <!-- Processadores mais antigos/menos potentes adicionados aqui -->
+                            <option value="Intel Core 2 Duo E8400">Intel Core 2 Duo E8400 (2/2, 3.0 GHz)</option>
+                            <option value="Intel Core 2 Quad Q6600">Intel Core 2 Quad Q6600 (4/4, 2.4 GHz)</option>
+                            <option value="AMD Phenom II X4 940">AMD Phenom II X4 940 (4/4, 3.0 GHz)</option>
+                            <option value="Intel Celeron G530">Intel Celeron G530 (2/2, 2.4 GHz)</option>
+                            <option value="AMD Athlon II X2 250">AMD Athlon II X2 250 (2/2, 2.4 GHz)</option>
+                            <!-- Processadores existentes -->
+                            <option value="Intel Core i3-8100">Intel Core i3-8100 (4/4, 3.6 GHz, 8ª Geração)</option>
+                            <option value="Intel Core i3-9100F">Intel Core i3-9100F (4/4, 3.6 GHz, 9ª Geração)</option>
+                            <option value="Intel Pentium G4600">Intel Pentium G4600 (2/4, 3.6 GHz, 7ª Geração)</option>
+                            <option value="Intel Core i5-7400">Intel Core i5-7400 (4/4, 3.0 GHz, 7ª Geração)</option>
+                            <option value="Intel Core i5-6400">Intel Core i5-6400 (4/4, 2.7–3.3 GHz, 6ª Geração)</option>
+                            <option value="AMD Ryzen 3 2200G">AMD Ryzen 3 2200G (4/4, 3.5 GHz, 1ª Ryzen, GPU Integrada)</option>
+                            <option value="AMD Ryzen 3 3200G">AMD Ryzen 3 3200G (4/4, 3.6 GHz, 2ª Ryzen, Bem Equilibrado)</option>
+                            <option value="AMD Athlon 3000G">AMD Athlon 3000G (2/4, 3.5 GHz, Zen (lite))</option>
+                            <option value="Intel Core i3-6100">Intel Core i3-6100 (2/4, 3.7 GHz, 6ª Geração)</option>
+                            <option value="Intel Core i3-6300">Intel Core i3-6300 (2/4, 3.8 GHz, 6ª Geração)</option>
+                            <!-- Adicione mais opções de processador conforme necessário -->
+                        </select>
+                    </div>
+                </div>
+                <!-- Informação sobre GPU e Disco -->
+                <div class="mt-4 p-3 bg-blue-950 border border-blue-800 rounded-lg text-blue-200 text-sm">
+                    <p><strong>Nota:</strong> A GPU e o espaço em disco serão definidos pelo proprietário do serviço, não pelo usuário final neste formulário.</p>
+                </div>
+                <div class="flex justify-end mt-6">
+                    <button type="button" id="next1" class="bg-blue-600 text-white p-3 rounded-lg font-semibold animated-button">Próximo</button>
+                </div>
+            </div>
+
+            <!-- Passo 2: Configuração de Software -->
+            <div id="step2" class="step-content">
+                <h2 class="text-2xl font-semibold text-gray-100 mb-4">Passo 2: Configuração de Software</h2>
+                <!-- Seção de Sistema Operacional -->
+                <div>
+                    <label class="block text-gray-200 text-sm font-semibold mb-2">Sistema Operacional:</label>
+                    <div class="mt-2 space-y-2">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="os" value="Windows 7" class="form-radio text-blue-400 h-4 w-4">
+                            <img src="https://placehold.co/40x40/0078d4/ffffff?text=Win7" alt="Windows 7" class="ml-2 rounded-md">
+                            <span class="ml-2 text-gray-200">Windows 7</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4">
+                            <input type="radio" name="os" value="Windows 8.1" class="form-radio text-blue-400 h-4 w-4">
+                            <img src="https://placehold.co/40x40/0078d4/ffffff?text=Win8.1" alt="Windows 8.1" class="ml-2 rounded-md">
+                            <span class="ml-2 text-gray-200">Windows 8.1</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4">
+                            <input type="radio" name="os" value="Windows 10" class="form-radio text-blue-400 h-4 w-4" checked>
+                            <img src="https://placehold.co/40x40/0078d4/ffffff?text=Win10" alt="Windows 10" class="ml-2 rounded-md">
+                            <span class="ml-2 text-gray-200">Windows 10</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4">
+                            <input type="radio" name="os" value="Windows 11" class="form-radio text-blue-400 h-4 w-4">
+                            <img src="https://placehold.co/40x40/0078d4/ffffff?text=Win11" alt="Windows 11" class="ml-2 rounded-md">
+                            <span class="ml-2 text-gray-200">Windows 11</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4">
+                            <input type="radio" name="os" value="Linux" class="form-radio text-blue-400 h-4 w-4">
+                            <img src="https://placehold.co/40x40/fccb00/ffffff?text=Linux" alt="Linux" class="ml-2 rounded-md">
+                            <span class="ml-2 text-gray-200">Linux</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Seção de Aplicativos Pré-instalados -->
+                <div class="mt-6">
+                    <label for="preInstalledApps" class="block text-gray-200 text-sm font-semibold mb-2">Aplicativos Pré-instalados (separados por vírgula):</label>
+                    <textarea id="preInstalledApps" name="preInstalledApps" rows="3" class="block w-full p-3 border border-gray-700 rounded-lg shadow-sm bg-gray-900 text-white focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out" placeholder="Ex: Microsoft Office, Google Chrome, VS Code"></textarea>
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button type="button" id="prev2" class="bg-gray-800 text-white p-3 rounded-lg font-semibold animated-button">Anterior</button>
+                    <button type="button" id="next2" class="bg-blue-600 text-white p-3 rounded-lg font-semibold animated-button">Próximo</button>
+                </div>
+            </div>
+
+            <!-- Passo 3: Detalhes da Conta -->
+            <div id="step3" class="step-content">
+                <h2 class="text-2xl font-semibold text-gray-100 mb-4">Passo 3: Detalhes da Conta</h2>
+                <!-- Seção de Extras (Usuário e Senha) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="username" class="block text-gray-200 text-sm font-semibold mb-2">Nome de Usuário (Opcional):</label>
+                        <input type="text" id="username" name="username" class="block w-full p-3 border border-gray-700 rounded-lg shadow-sm bg-gray-900 text-white focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out" placeholder="Seu nome de usuário">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-gray-200 text-sm font-semibold mb-2">Senha (Opcional):</label>
+                        <input type="password" id="password" name="password" class="block w-full p-3 border border-gray-700 rounded-lg shadow-sm bg-gray-900 text-white focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out" placeholder="Sua senha">
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-6">
+                    <button type="button" id="prev3" class="bg-gray-800 text-white p-3 rounded-lg font-semibold animated-button">Anterior</button>
+                    <button type="button" id="next3" class="w-auto bg-blue-600 text-white p-3 rounded-lg font-semibold animated-button">
+                        Próximo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Passo 4: Preferências de Uso e Serviço -->
+            <div id="step4" class="step-content">
+                <h2 class="text-2xl font-semibold text-gray-100 mb-4">Passo 4: Preferências de Uso e Serviço</h2>
+
+                <!-- Seção de Uso Principal -->
+                <div>
+                    <label class="block text-gray-200 text-sm font-semibold mb-2">Uso Principal do Cloud PC:</label>
+                    <select id="primaryUse" name="primaryUse" class="block w-full p-3 border border-gray-700 rounded-lg shadow-sm bg-gray-900 text-white focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out">
+                        <option value="Trabalho de Escritório">Trabalho de Escritório (Office, Navegação)</option>
+                        <option value="Desenvolvimento de Software">Desenvolvimento de Software (IDE, Compilação)</option>
+                        <option value="Design Gráfico/Edição de Vídeo">Design Gráfico/Edição de Vídeo</option>
+                        <option value="Jogos">Jogos</option>
+                        <option value="Navegação e Mídia">Navegação e Mídia</option>
+                        <option value="Outro">Outro (especificar abaixo)</option>
+                    </select>
+                </div>
+                <div class="mt-4">
+                    <input type="text" id="otherUse" name="otherUse" class="block w-full p-3 border border-gray-700 rounded-lg shadow-sm bg-gray-900 text-white focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out" placeholder="Especifique outro uso (opcional)" style="display: none;">
+                </div>
+
+                <!-- Seção de Velocidade de Internet Preferida -->
+                <div class="mt-6">
+                    <label for="internetSpeed" class="block text-gray-200 text-sm font-semibold mb-2">Velocidade de Internet Preferida:</label>
+                    <select id="internetSpeed" name="internetSpeed" class="block w-full p-3 border border-gray-700 rounded-lg shadow-sm bg-gray-900 text-white focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out">
+                        <option value="50Mbps">Até 50 Mbps</option>
+                        <option value="100Mbps">Até 100 Mbps</option>
+                        <option value="200Mbps">Até 200 Mbps</option>
+                    </select>
+                </div>
+
+                <!-- Seção de Preferência de Backup -->
+                <div class="mt-6">
+                    <label class="block text-gray-200 text-sm font-semibold mb-2">Preferência de Backup de Dados:</label>
+                    <div class="mt-2 space-y-2">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="backupPreference" value="Nenhum" class="form-radio text-blue-400 h-4 w-4" checked>
+                            <span class="ml-2 text-gray-200">Nenhum</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4">
+                            <input type="radio" name="backupPreference" value="Diário" class="form-radio text-blue-400 h-4 w-4">
+                            <span class="ml-2 text-gray-200">Backup Diário</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4">
+                            <input type="radio" name="backupPreference" value="Semanal" class="form-radio text-blue-400 h-4 w-4">
+                            <span class="ml-2 text-gray-200">Backup Semanal</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4">
+                            <input type="radio" name="backupPreference" value="Alta Redundância" class="form-radio text-blue-400 h-4 w-4">
+                            <span class="ml-2 text-gray-200">Alta Redundância (Múltiplas cópias)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-6">
+                    <button type="button" id="prev4" class="bg-gray-800 text-white p-3 rounded-lg font-semibold animated-button">Anterior</button>
+                    <button type="button" id="next4" class="w-auto bg-blue-600 text-white p-3 rounded-lg font-semibold animated-button">
+                        Próximo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Passo 5: Configurações Adicionais -->
+            <div id="step5" class="step-content">
+                <h2 class="text-2xl font-semibold text-gray-100 mb-4">Passo 5: Configurações Adicionais</h2>
+
+                <!-- Seção de Fuso Horário -->
+                <div>
+                    <label for="timezone" class="block text-gray-200 text-sm font-semibold mb-2">Fuso Horário:</label>
+                    <select id="timezone" name="timezone" class="block w-full p-3 border border-gray-700 rounded-lg shadow-sm bg-gray-900 text-white focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out">
+                        <option value="America/Sao_Paulo">América/São Paulo (GMT-3)</option>
+                        <option value="America/New_York">América/Nova Iorque (GMT-4)</option>
+                        <option value="Europe/London">Europa/Londres (GMT+0)</option>
+                        <option value="Asia/Tokyo">Ásia/Tóquio (GMT+9)</option>
+                        <option value="UTC">UTC (Tempo Universal Coordenado)</option>
+                    </select>
+                </div>
+
+                <!-- Seção de Idioma do Sistema -->
+                <div class="mt-6">
+                    <label for="systemLanguage" class="block text-gray-200 text-sm font-semibold mb-2">Idioma do Sistema:</label>
+                    <select id="systemLanguage" name="systemLanguage" class="block w-full p-3 border border-gray-700 rounded-lg shadow-sm bg-gray-900 text-white focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out">
+                        <option value="pt-BR">Português (Brasil)</option>
+                        <option value="en-US">Inglês (Estados Unidos)</option>
+                        <option value="es-ES">Espanhol (Espanha)</option>
+                        <option value="fr-FR">Francês (França)</option>
+                    </select>
+                </div>
+
+                <!-- Seção de Atualizações Automáticas -->
+                <div class="mt-6">
+                    <label class="block text-gray-200 text-sm font-semibold mb-2">Atualizações Automáticas:</label>
+                    <div class="mt-2 space-y-2">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="autoUpdates" value="Ativar" class="form-radio text-blue-400 h-4 w-4" checked>
+                            <span class="ml-2 text-gray-200">Ativar</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4">
+                            <input type="radio" name="autoUpdates" value="Desativar" class="form-radio text-blue-400 h-4 w-4">
+                            <span class="ml-2 text-gray-200">Desativar</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4">
+                            <input type="radio" name="autoUpdates" value="Notificar" class="form-radio text-blue-400 h-4 w-4">
+                            <span class="ml-2 text-gray-200">Notificar antes de instalar</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-6">
+                    <button type="button" id="prev5" class="bg-gray-800 text-white p-3 rounded-lg font-semibold animated-button">Anterior</button>
+                    <button type="submit" class="w-auto bg-green-600 text-white p-3 rounded-lg font-semibold animated-button">
+                        Finalizar Configuração
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Área para exibir a configuração enviada -->
+        <div id="output" class="mt-8 p-6 bg-gray-950 rounded-lg border border-gray-800 hidden">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">Configuração Solicitada:</h2>
+            <pre id="outputContent" class="text-gray-100 whitespace-pre-wrap"></pre>
+            <div id="loadingMessage" class="loading-message hidden">
+                <p>Suas configurações estão sendo processadas. Isso pode levar alguns minutos para ser concluído.</p>
+                <p>Agradecemos a sua paciência!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        // Mapeamento de processadores para URLs de imagem (placeholders)
+        const processorImages = {
+            "Intel Core 2 Duo E8400": "https://placehold.co/60x60/4a76a8/ffffff?text=C2D",
+            "Intel Core 2 Quad Q6600": "https://placehold.co/60x60/4a76a8/ffffff?text=C2Q",
+            "AMD Phenom II X4 940": "https://placehold.co/60x60/b32b2b/ffffff?text=Phenom",
+            "Intel Celeron G530": "https://placehold.co/60x60/4a76a8/ffffff?text=Celeron",
+            "AMD Athlon II X2 250": "https://placehold.co/60x60/b32b2b/ffffff?text=Athlon",
+            "Intel Core i3-8100": "https://placehold.co/60x60/4a76a8/ffffff?text=i3-8",
+            "Intel Core i3-9100F": "https://placehold.co/60x60/4a76a8/ffffff?text=i3-9",
+            "Intel Pentium G4600": "https://placehold.co/60x60/4a76a8/ffffff?text=Pentium",
+            "Intel Core i5-7400": "https://placehold.co/60x60/4a76a8/ffffff?text=i5-7",
+            "Intel Core i5-6400": "https://placehold.co/60x60/4a76a8/ffffff?text=i5-6",
+            "AMD Ryzen 3 2200G": "https://placehold.co/60x60/b32b2b/ffffff?text=R3-1",
+            "AMD Ryzen 3 3200G": "https://placehold.co/60x60/b32b2b/ffffff?text=R3-2",
+            "AMD Athlon 3000G": "https://placehold.co/60x60/b32b2b/ffffff?text=AthlonG",
+            "Intel Core i3-6100": "https://placehold.co/60x60/4a76a8/ffffff?text=i3-61",
+            "Intel Core i3-6300": "https://placehold.co/60x60/4a76a8/ffffff?text=i3-63"
+        };
+
+
+        // Função para atualizar a visibilidade dos passos e o indicador de progresso
+        function updateStepVisibility() {
+            // Esconde todos os passos e remove a classe 'active'
+            document.querySelectorAll('.step-content').forEach(step => {
+                step.classList.remove('active');
+            });
+
+            // Adiciona a classe 'active' ao passo atual para animar
+            const currentStepElement = document.getElementById(`step${currentStep}`);
+            if (currentStepElement) {
+                currentStepElement.classList.add('active');
+            }
+
+            // Atualiza os pontos de progresso
+            document.querySelectorAll('.progress-dot').forEach(dot => {
+                dot.classList.remove('active');
+            });
+            const currentProgressDot = document.querySelector(`.progress-dot[data-step="${currentStep}"]`);
+            if (currentProgressDot) {
+                currentProgressDot.classList.add('active');
+            }
+        }
+
+        // Função para atualizar a imagem do processador
+        function updateProcessorImage() {
+            const selectedProcessor = document.getElementById('processor').value;
+            const processorImgElement = document.getElementById('processorImage');
+            // Define a imagem com base no mapeamento, ou uma imagem padrão se não encontrada
+            processorImgElement.src = processorImages[selectedProcessor] || "https://placehold.co/60x60/a0c4ff/ffffff?text=CPU";
+        }
+
+        // Lógica para mostrar/esconder o campo "Outro uso"
+        document.getElementById('primaryUse').addEventListener('change', function() {
+            const otherUseField = document.getElementById('otherUse');
+            if (this.value === 'Outro') {
+                otherUseField.style.display = 'block';
+            } else {
+                otherUseField.style.display = 'none';
+                otherUseField.value = ''; // Limpa o campo se não for "Outro"
+            }
+        });
+
+
+        // Navegação para o próximo passo
+        document.getElementById('next1').addEventListener('click', () => {
+            currentStep = 2;
+            updateStepVisibility();
+        });
+
+        document.getElementById('next2').addEventListener('click', () => {
+            currentStep = 3;
+            updateStepVisibility();
+        });
+
+        document.getElementById('next3').addEventListener('click', () => {
+            currentStep = 4;
+            updateStepVisibility();
+        });
+
+        document.getElementById('next4').addEventListener('click', () => {
+            currentStep = 5;
+            updateStepVisibility();
+        });
+
+        // Navegação para o passo anterior
+        document.getElementById('prev2').addEventListener('click', () => {
+            currentStep = 1;
+            updateStepVisibility();
+        });
+
+        document.getElementById('prev3').addEventListener('click', () => {
+            currentStep = 2;
+            updateStepVisibility();
+        });
+
+        document.getElementById('prev4').addEventListener('click', () => {
+            currentStep = 3;
+            updateStepVisibility();
+        });
+
+        document.getElementById('prev5').addEventListener('click', () => {
+            currentStep = 4;
+            updateStepVisibility();
+        });
+
+        // Adiciona um listener para o evento de submit do formulário
+        document.getElementById('cloudPcForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Previne o comportamento padrão de envio do formulário
+
+            // Coleta os valores do formulário
+            const ram = document.getElementById('ram').value;
+            const processor = document.getElementById('processor').value;
+            const os = document.querySelector('input[name="os"]:checked').value;
+            const preInstalledApps = document.getElementById('preInstalledApps').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const primaryUse = document.getElementById('primaryUse').value;
+            const otherUse = document.getElementById('otherUse').value;
+            const internetSpeed = document.getElementById('internetSpeed').value;
+            const backupPreference = document.querySelector('input[name="backupPreference"]:checked').value;
+            const timezone = document.getElementById('timezone').value;
+            const systemLanguage = document.getElementById('systemLanguage').value;
+            const autoUpdates = document.querySelector('input[name="autoUpdates"]:checked').value;
+
+
+            // Cria um objeto com os dados da configuração
+            const config = {
+                "Memória RAM": ram,
+                "Processador": processor,
+                "Sistema Operacional": os,
+                "Aplicativos Pré-instalados": preInstalledApps || "Nenhum",
+                "GPU": "Definido pelo proprietário", // GPU agora é definido pelo proprietário
+                "Memória de Disco": "Definido pelo proprietário", // Disco agora é definido pelo proprietário
+                "Nome de Usuário": username || "Não especificado", // Opcional
+                "Senha": password || "Não especificada", // Opcional
+                "Uso Principal": primaryUse === "Outro" ? otherUse || "Outro não especificado" : primaryUse,
+                "Velocidade de Internet Preferida": internetSpeed,
+                "Preferência de Backup": backupPreference,
+                "Fuso Horário": timezone,
+                "Idioma do Sistema": systemLanguage,
+                "Atualizações Automáticas": autoUpdates
+            };
+
+            // Exibe a configuração no elemento de saída
+            const outputContent = document.getElementById('outputContent');
+            outputContent.textContent = JSON.stringify(config, null, 2); // Formata o JSON para melhor leitura
+
+            // Torna a área de saída visível com animação
+            const outputElement = document.getElementById('output');
+            outputElement.classList.remove('hidden'); // Garante que esteja visível para a animação
+            outputElement.classList.add('show'); // Adiciona classe para disparar a animação
+
+            // Mostra a mensagem de carregamento
+            const loadingMessage = document.getElementById('loadingMessage');
+            loadingMessage.classList.remove('hidden');
+            setTimeout(() => {
+                loadingMessage.classList.add('show');
+            }, 100); // Pequeno atraso para a transição
+
+
+            // Opcional: Você pode adicionar aqui a lógica para enviar esses dados para um servidor.
+            console.log("Configuração enviada:", config);
+        });
+
+        // Adiciona um listener para o evento 'change' no select do processador
+        document.getElementById('processor').addEventListener('change', updateProcessorImage);
+
+        // --- Three.js Background Animation ---
+        let scene, camera, renderer, stars;
+        let fadeDirection = 1; // 1 for fade in, -1 for fade out
+        let fadeSpeed = 0.0005; // Speed of fading
+
+        function initThreeJS() {
+            const canvas = document.getElementById('bg-canvas');
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio); // Melhora a qualidade em telas de alta densidade
+
+            // Criação das estrelas
+            const starGeometry = new THREE.BufferGeometry();
+            const starMaterial = new THREE.PointsMaterial({
+                color: 0xffffff, // Cor branca para as estrelas
+                size: 0.5, // Tamanho das estrelas
+                transparent: true,
+                opacity: 0.0 // Começa com opacidade zero para o fade-in
+            });
+
+            const starVertices = [];
+            for (let i = 0; i < 10000; i++) { // Número de estrelas
+                const x = (Math.random() - 0.5) * 2000;
+                const y = (Math.random() - 0.5) * 2000;
+                const z = (Math.random() - 0.5) * 2000;
+                starVertices.push(x, y, z);
+            }
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+
+            stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
+
+            camera.position.z = 5; // Posição inicial da câmera
+
+            // Evento de redimensionamento da janela
+            window.addEventListener('resize', onWindowResize, false);
+
+            // Inicia o efeito de fade-in do canvas principal
+            setTimeout(() => {
+                canvas.style.opacity = 1;
+            }, 100); // Pequeno atraso para garantir que o CSS seja aplicado
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotação sutil das estrelas para um efeito de movimento
+            stars.rotation.x += 0.0001;
+            stars.rotation.y += 0.0002;
+
+            // Efeito de fade-in/fade-out das estrelas
+            stars.material.opacity += fadeDirection * fadeSpeed;
+
+            if (stars.material.opacity >= 1.0) {
+                stars.material.opacity = 1.0;
+                fadeDirection = -1; // Começa a desaparecer
+            } else if (stars.material.opacity <= 0.0) {
+                stars.material.opacity = 0.0;
+                fadeDirection = 1; // Começa a aparecer
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Inicializa a visibilidade do primeiro passo e a imagem do processador
+        updateStepVisibility();
+        updateProcessorImage(); // Garante que a imagem inicial seja carregada corretamente
+
+        // Inicia a animação 3D quando a janela estiver totalmente carregada
+        window.onload = function() {
+            initThreeJS();
+            animate();
+        };
+    </script>
+</body>
+</html>
