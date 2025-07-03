@@ -93,9 +93,22 @@
         .loading-message.show {
             opacity: 1;
         }
+        /* Estilo para o controle de áudio, para que não interfira no layout */
+        .audio-controls {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            z-index: 10; /* Acima de outros elementos */
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            padding: 5px;
+        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
+    <!-- Adicionado o elemento de áudio para a música de fundo -->
+    <audio id="backgroundMusic" src="bk.mp3" autoplay loop volume="0.5" class="audio-controls"></audio>
+
     <canvas id="bg-canvas"></canvas> <!-- Canvas para o fundo 3D -->
 
     <div class="form-container w-full max-w-2xl">
@@ -613,6 +626,5 @@
             animate();
         };
     </script>
-    
 </body>
 </html>
