@@ -1,11 +1,414 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acessar Formulário Cloud PC</title>
+    <title>Simulado de Matemática - 1ª Série</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            body { background: white; }
+            .page-break { page-break-after: always; }
+        }
+        body { font-family: 'Times New Roman', Times, serif; }
+        .question-box { border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1rem; }
+    </style>
 </head>
-<body>
-    <a href="form.html">Clique aqui para acessar o formulário de Configuração do Cloud PC</a>
+<body class="bg-gray-100 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-8 shadow-lg border-t-8 border-blue-600">
+        <!-- Cabeçalho Estilo Prova -->
+        <div class="border-2 border-black p-4 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-xl font-bold uppercase">Avaliação de Matemática - 1º Bimestre</h1>
+                <span class="text-sm">Data: ___/___/2026</span>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="border-b border-black">Estudante: __________________________________________</div>
+                <div class="border-b border-black">Série: 1ª Série - Turma: _______</div>
+            </div>
+        </div>
+
+        <div class="bg-yellow-50 p-3 mb-6 border-l-4 border-yellow-400 text-sm no-print">
+            <strong>Dica do Professor:</strong> Leia com atenção. Em questões de lógica (celulares/lucro), tente encontrar o valor de 1 unidade antes de marcar a resposta.
+        </div>
+
+        <!-- Início das Questões -->
+        <form id="quizForm">
+            
+            <!-- SEÇÃO 1: LINGUAGEM ALGÉBRICA -->
+            <h2 class="bg-gray-200 p-1 font-bold mb-4 uppercase text-center text-sm">Parte 1: Linguagem Algébrica e Polinômios</h2>
+
+            <div class="question-box">
+                <p class="font-bold">1. Como representamos "o triplo de um número subtraído de dez"?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q1" value="a"> (A) $x/3 - 10$</label>
+                    <label class="block"><input type="radio" name="q1" value="b"> (B) $3x - 10$</label>
+                    <label class="block"><input type="radio" name="q1" value="c"> (C) $10 - 3x$</label>
+                    <label class="block"><input type="radio" name="q1" value="d"> (D) $3(x - 10)$</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">2. A expressão $\frac{x}{2} + 5$ pode ser traduzida como:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q2" value="a"> (A) O dobro de x mais cinco.</label>
+                    <label class="block"><input type="radio" name="q2" value="b"> (B) A metade de x mais cinco.</label>
+                    <label class="block"><input type="radio" name="q2" value="c"> (C) Cinco vezes a metade de x.</label>
+                    <label class="block"><input type="radio" name="q2" value="d"> (D) O quadrado de x mais cinco.</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">3. Qual é o perímetro de um triângulo equilátero cujo lado mede $y + 2$?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q3" value="a"> (A) $y + 6$</label>
+                    <label class="block"><input type="radio" name="q3" value="b"> (B) $3y + 2$</label>
+                    <label class="block"><input type="radio" name="q3" value="c"> (C) $3y + 6$</label>
+                    <label class="block"><input type="radio" name="q3" value="d"> (D) $2y + 4$</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">4. Reduza os termos semelhantes: $5x + 3y - 2x + 4y$.</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q4" value="a"> (A) $7x + 7y$</label>
+                    <label class="block"><input type="radio" name="q4" value="b"> (B) $10xy$</label>
+                    <label class="block"><input type="radio" name="q4" value="c"> (C) $3x + 7y$</label>
+                    <label class="block"><input type="radio" name="q4" value="d"> (D) $3x - y$</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">5. Se $a = 2$ e $b = -3$, qual o valor de $2a + b$?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q5" value="a"> (A) 1</label>
+                    <label class="block"><input type="radio" name="q5" value="b"> (B) 7</label>
+                    <label class="block"><input type="radio" name="q5" value="c"> (C) -1</label>
+                    <label class="block"><input type="radio" name="q5" value="d"> (D) 4</label>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 2: LÓGICA E FUNÇÃO -->
+            <h2 class="bg-gray-200 p-1 font-bold mb-4 uppercase text-center text-sm">Parte 2: Lógica, Proporção e Funções</h2>
+
+            <div class="question-box">
+                <p class="font-bold">6. João vendeu 10 fones de ouvido e lucrou R$ 200,00. Quanto ele lucrará se vender 30 fones?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q6" value="a"> (A) R$ 400,00</label>
+                    <label class="block"><input type="radio" name="q6" value="b"> (B) R$ 500,00</label>
+                    <label class="block"><input type="radio" name="q6" value="c"> (C) R$ 600,00</label>
+                    <label class="block"><input type="radio" name="q6" value="d"> (D) R$ 800,00</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">7. Baseado na questão anterior, qual o preço de lucro por unidade?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q7" value="a"> (A) R$ 10,00</label>
+                    <label class="block"><input type="radio" name="q7" value="b"> (B) R$ 20,00</label>
+                    <label class="block"><input type="radio" name="q7" value="c"> (C) R$ 25,00</label>
+                    <label class="block"><input type="radio" name="q7" value="d"> (D) R$ 30,00</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">8. Uma fábrica produz 100 peças em 2 horas. Quantas peças produzirá em 5 horas?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q8" value="a"> (A) 200</label>
+                    <label class="block"><input type="radio" name="q8" value="b"> (B) 250</label>
+                    <label class="block"><input type="radio" name="q8" value="c"> (C) 300</label>
+                    <label class="block"><input type="radio" name="q8" value="d"> (D) 500</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">9. A função que representa o custo de um Uber que cobra R$ 5,00 fixos mais R$ 2,00 por km rodado (x) é:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q9" value="a"> (A) $y = 5x + 2$</label>
+                    <label class="block"><input type="radio" name="q9" value="b"> (B) $y = 2x + 5$</label>
+                    <label class="block"><input type="radio" name="q9" value="c"> (C) $y = 7x$</label>
+                    <label class="block"><input type="radio" name="q9" value="d"> (D) $y = 5 + 2 + x$</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">10. Se na função $y = 10x$, o valor de $y$ é 100, qual o valor de $x$?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q10" value="a"> (A) 1</label>
+                    <label class="block"><input type="radio" name="q10" value="b"> (B) 10</label>
+                    <label class="block"><input type="radio" name="q10" value="c"> (C) 100</label>
+                    <label class="block"><input type="radio" name="q10" value="d"> (D) 0</label>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 3: PLANO CARTESIANO -->
+            <h2 class="bg-gray-200 p-1 font-bold mb-4 uppercase text-center text-sm">Parte 3: Plano Cartesiano</h2>
+
+            <div class="question-box">
+                <p class="font-bold">11. O ponto $P(0, -5)$ está localizado:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q11" value="a"> (A) No eixo das abscissas (X).</label>
+                    <label class="block"><input type="radio" name="q11" value="b"> (B) No eixo das ordenadas (Y).</label>
+                    <label class="block"><input type="radio" name="q11" value="c"> (C) No 3º quadrante.</label>
+                    <label class="block"><input type="radio" name="q11" value="d"> (D) Na origem.</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">12. No par ordenado $(4, -2)$, o número $-2$ representa a:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q12" value="a"> (A) Abscissa</label>
+                    <label class="block"><input type="radio" name="q12" value="b"> (B) Ordenada</label>
+                    <label class="block"><input type="radio" name="q12" value="c"> (C) Origem</label>
+                    <label class="block"><input type="radio" name="q12" value="d"> (D) Diagonal</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">13. Qual quadrante possui apenas coordenadas negativas $(- , -)$?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q13" value="a"> (A) 1º Quadrante</label>
+                    <label class="block"><input type="radio" name="q13" value="b"> (B) 2º Quadrante</label>
+                    <label class="block"><input type="radio" name="q13" value="c"> (C) 3º Quadrante</label>
+                    <label class="block"><input type="radio" name="q13" value="d"> (D) 4º Quadrante</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">14. Se um ponto se desloca 3 unidades para a esquerda e 2 para cima saindo da origem, sua coordenada é:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q14" value="a"> (A) $(3, 2)$</label>
+                    <label class="block"><input type="radio" name="q14" value="b"> (B) $(-3, -2)$</label>
+                    <label class="block"><input type="radio" name="q14" value="c"> (C) $(-3, 2)$</label>
+                    <label class="block"><input type="radio" name="q14" value="d"> (D) $(2, -3)$</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">15. A distância do ponto $(0,0)$ até o ponto $(0, 8)$ é:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q15" value="a"> (A) 0</label>
+                    <label class="block"><input type="radio" name="q15" value="b"> (B) 8</label>
+                    <label class="block"><input type="radio" name="q15" value="c"> (C) 4</label>
+                    <label class="block"><input type="radio" name="q15" value="d"> (D) 16</label>
+                </div>
+            </div>
+
+            <div class="page-break"></div>
+
+            <!-- CONTINUAÇÃO ATÉ 30 QUESTÕES (Resumidas para brevidade, mas com foco total) -->
+             <h2 class="bg-gray-200 p-1 font-bold mb-4 uppercase text-center text-sm">Parte 4: Fatoração e Geometria</h2>
+
+            <div class="question-box">
+                <p class="font-bold">16. Fatore a expressão $5x + 5y$:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q16" value="a"> (A) $5(x+y)$</label>
+                    <label class="block"><input type="radio" name="q16" value="b"> (B) $10xy$</label>
+                    <label class="block"><input type="radio" name="q16" value="c"> (C) $5x(y)$</label>
+                    <label class="block"><input type="radio" name="q16" value="d"> (D) $(5+x)y$</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">17. O fator comum em $12a + 18b$ é:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q17" value="a"> (A) 2</label>
+                    <label class="block"><input type="radio" name="q17" value="b"> (B) 3</label>
+                    <label class="block"><input type="radio" name="q17" value="c"> (C) 6</label>
+                    <label class="block"><input type="radio" name="q17" value="d"> (D) 12</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">18. Uma sala quadrada tem lado medindo $L$. Se dobrarmos o lado, a nova área será:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q18" value="a"> (A) $2L$</label>
+                    <label class="block"><input type="radio" name="q18" value="b"> (B) $4L^2$</label>
+                    <label class="block"><input type="radio" name="q18" value="c"> (C) $2L^2$</label>
+                    <label class="block"><input type="radio" name="q18" value="d"> (D) $L+4$</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">19. O monômio $7x^2y$ tem grau:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q19" value="a"> (A) 1</label>
+                    <label class="block"><input type="radio" name="q19" value="b"> (B) 2</label>
+                    <label class="block"><input type="radio" name="q19" value="c"> (C) 3</label>
+                    <label class="block"><input type="radio" name="q19" value="d"> (D) 7</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">20. Qual o resultado de $(2x) \cdot (3x)$?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q20" value="a"> (A) $5x$</label>
+                    <label class="block"><input type="radio" name="q20" value="b"> (B) $6x$</label>
+                    <label class="block"><input type="radio" name="q20" value="c"> (C) $6x^2$</label>
+                    <label class="block"><input type="radio" name="q20" value="d"> (D) $5x^2$</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">21. Simplifique: $(10x^6) \div (2x^2)$.</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q21" value="a"> (A) $5x^3$</label>
+                    <label class="block"><input type="radio" name="q21" value="b"> (B) $5x^4$</label>
+                    <label class="block"><input type="radio" name="q21" value="c"> (C) $8x^4$</label>
+                    <label class="block"><input type="radio" name="q21" value="d"> (D) $5x^8$</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">22. O que é o coeficiente linear ($b$) na função $y = ax + b$?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q22" value="a"> (A) Onde a reta toca o eixo X.</label>
+                    <label class="block"><input type="radio" name="q22" value="b"> (B) Onde a reta toca o eixo Y.</label>
+                    <label class="block"><input type="radio" name="q22" value="c"> (C) A inclinação da reta.</label>
+                    <label class="block"><input type="radio" name="q22" value="d"> (D) O valor de x.</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">23. Se uma reta é crescente, seu coeficiente angular ($a$) é:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q23" value="a"> (A) Zero</label>
+                    <label class="block"><input type="radio" name="q23" value="b"> (B) Negativo</label>
+                    <label class="block"><input type="radio" name="q23" value="c"> (C) Positivo</label>
+                    <label class="block"><input type="radio" name="q23" value="d"> (D) Infinito</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">24. Quantos celulares de R$ 500,00 preciso vender para ganhar R$ 5.000,00?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q24" value="a"> (A) 5</label>
+                    <label class="block"><input type="radio" name="q24" value="b"> (B) 10</label>
+                    <label class="block"><input type="radio" name="q24" value="c"> (C) 12</label>
+                    <label class="block"><input type="radio" name="q24" value="d"> (D) 50</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">25. A soma de um número com seu sucessor é representada por:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q25" value="a"> (A) $x + x$</label>
+                    <label class="block"><input type="radio" name="q25" value="b"> (B) $x + (x + 1)$</label>
+                    <label class="block"><input type="radio" name="q25" value="c"> (C) $x + (x - 1)$</label>
+                    <label class="block"><input type="radio" name="q25" value="d"> (D) $2x + 2$</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">26. O ponto $(-5, 0)$ pertence a qual eixo?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q26" value="a"> (A) Eixo Y</label>
+                    <label class="block"><input type="radio" name="q26" value="b"> (B) Eixo X</label>
+                    <label class="block"><input type="radio" name="q26" value="c"> (C) Origem</label>
+                    <label class="block"><input type="radio" name="q26" value="d"> (D) Nenhum</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">27. No conjunto $A = \{1, 2, 3\}$ e $B = \{3, 4, 5\}$, a intersecção $A \cap B$ é:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q27" value="a"> (A) $\{1, 2, 3, 4, 5\}$</label>
+                    <label class="block"><input type="radio" name="q27" value="b"> (B) $\{3\}$</label>
+                    <label class="block"><input type="radio" name="q27" value="c"> (C) $\{1, 2, 4, 5\}$</label>
+                    <label class="block"><input type="radio" name="q27" value="d"> (D) Vazio</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">28. Se $f(x) = 2x + 10$, qual o valor de $f(5)$?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q28" value="a"> (A) 15</label>
+                    <label class="block"><input type="radio" name="q28" value="b"> (B) 20</label>
+                    <label class="block"><input type="radio" name="q28" value="c"> (C) 25</label>
+                    <label class="block"><input type="radio" name="q28" value="d"> (D) 30</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">29. O valor de $b$ na função $y = 3x - 7$ é:</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q29" value="a"> (A) 3</label>
+                    <label class="block"><input type="radio" name="q29" value="b"> (B) 7</label>
+                    <label class="block"><input type="radio" name="q29" value="c"> (C) -7</label>
+                    <label class="block"><input type="radio" name="q29" value="d"> (D) 0</label>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p class="font-bold">30. Qual a "lei da função" para: "O preço a pagar é dez reais fixos mais comissão de cinco reais"?</p>
+                <div class="ml-4 mt-2">
+                    <label class="block"><input type="radio" name="q30" value="a"> (A) $y = 10x + 5$</label>
+                    <label class="block"><input type="radio" name="q30" value="b"> (B) $y = 5x + 10$</label>
+                    <label class="block"><input type="radio" name="q30" value="c"> (C) $y = 15x$</label>
+                    <label class="block"><input type="radio" name="q30" value="d"> (D) $y = 50x$</label>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="checkAnswers()" class="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700">Corrigir Prova</button>
+            <button onclick="window.print()" class="bg-gray-600 text-white px-6 py-2 rounded font-bold hover:bg-gray-700">Imprimir Prova</button>
+        </div>
+
+        <div id="result" class="mt-6 p-4 rounded hidden bg-blue-100 border-2 border-blue-300"></div>
+
+        <!-- Gabarito Escondido (Só aparece ao clicar em corrigir) -->
+        <div id="gabarito" class="mt-6 p-4 bg-gray-50 border border-dashed border-gray-400 hidden">
+            <h3 class="font-bold mb-2">Gabarito para conferência:</h3>
+            <div class="grid grid-cols-5 gap-2 text-xs">
+                <span>1-B | 2-B | 3-C | 4-C | 5-A</span>
+                <span>6-C | 7-B | 8-B | 9-B | 10-B</span>
+                <span>11-B | 12-B | 13-C | 14-C | 15-B</span>
+                <span>16-A | 17-C | 18-B | 19-C | 20-C</span>
+                <span>21-B | 22-B | 23-C | 24-B | 25-B</span>
+                <span>26-B | 27-B | 28-B | 29-C | 30-B</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const answers = {
+            q1:'b', q2:'b', q3:'c', q4:'c', q5:'a', 
+            q6:'c', q7:'b', q8:'b', q9:'b', q10:'b',
+            q11:'b', q12:'b', q13:'c', q14:'c', q15:'b',
+            q16:'a', q17:'c', q18:'b', q19:'c', q20:'c',
+            q21:'b', q22:'b', q23:'c', q24:'b', q25:'b',
+            q26:'b', q27:'b', q28:'b', q29:'c', q30:'b'
+        };
+
+        function checkAnswers() {
+            let score = 0;
+            const form = document.getElementById('quizForm');
+            const resultDiv = document.getElementById('result');
+            const gabaritoDiv = document.getElementById('gabarito');
+
+            for (let q in answers) {
+                const selected = form.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q]) {
+                    score++;
+                }
+            }
+
+            resultDiv.innerHTML = `<h3 class="text-xl font-bold">Resultado Final: ${score} de 30 acertos!</h3>`;
+            if(score >= 18) {
+                resultDiv.innerHTML += `<p class="text-green-700">Parabéns! Você está muito bem preparado para amanhã.</p>`;
+            } else {
+                resultDiv.innerHTML += `<p class="text-red-700">Continue revisando os pontos que errou. Você ainda tem tempo!</p>`;
+            }
+            
+            resultDiv.classList.remove('hidden');
+            gabaritoDiv.classList.remove('hidden');
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    </script>
 </body>
 </html>
